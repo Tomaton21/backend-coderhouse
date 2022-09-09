@@ -1,3 +1,4 @@
+const { randomInt } = require('crypto');
 const  express = require('express')
 let fs = require("fs");
 
@@ -10,33 +11,25 @@ const server = app.listen(PORT,() =>{
 class container {
     selectAll() {
       let ProductosData = fs.readFileSync("./Data.txt", "utf-8");
-      let ProductosJSON = JSON.parse(ProductosData);
-      return ProductosJSON;
+      return ProductosData;
     }
-    selectId(Id) {
-      let ProductosData = fs.readFileSync("./Data.txt", "utf-8");
-      let ProductosJSON = JSON.parse(ProductosData);
-      return ProductosJSON.Productos[id];
-    }
-    devolverLargoArray() {
-        let ProductosData = fs.readFileSync("./Data.txt", "utf-8");
-        let ProductosJSON = JSON.parse(ProductosData);
-        return ProductosJSON;
-      }
   }
   
 data = new container 
 app.get('/Productos',(req, res) => {
     try {
-        res.send(data.selectAll())
+        res.send(JSON.parse(data.selectAll()))
     } catch (error) {
-        console.log("Error al encontrar la data")
+        res.send("Error al encontrar la data")
     }
 })
-app.get('/ProductosAleatorio',(req, res) => {
+app.get('/ProductoAleatorio',(req, res) => {
     try {
-        res.send(data.selectId(1))
+        let dataJSON = JSON.parse(data.selectAll())
+        let rango = Object.keys(dataJSON.Productos).length
+        let numeroRandom = randomInt(rango)
+        res.send(dataJSON.Productos[numeroRandom])
     } catch (error) {
-        console.log("Error al encontrar la data")
+        res.send("Error al encontrar la data")
     }
 })
